@@ -20,14 +20,26 @@ public class Action {
     }
 
     private final Type type;
+    private final int amount;  // 下注金额（仅对BET有效）
 
     /**
-     * 创建一个动作
+     * 创建一个动作（无金额）
      *
      * @param type 动作类型
      */
     public Action(Type type) {
+        this(type, 0);
+    }
+
+    /**
+     * 创建一个动作（带金额）
+     *
+     * @param type 动作类型
+     * @param amount 下注金额
+     */
+    public Action(Type type, int amount) {
         this.type = Objects.requireNonNull(type, "Action type cannot be null");
+        this.amount = amount;
     }
 
     /**
@@ -37,6 +49,15 @@ public class Action {
      */
     public Type getType() {
         return type;
+    }
+
+    /**
+     * 获取下注金额
+     *
+     * @return 下注金额
+     */
+    public int getAmount() {
+        return amount;
     }
 
     /**
@@ -55,6 +76,9 @@ public class Action {
 
     @Override
     public String toString() {
+        if (type == Type.BET && amount > 0) {
+            return type.name() + "(" + amount + ")";
+        }
         return type.name();
     }
 
@@ -63,12 +87,12 @@ public class Action {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Action action = (Action) o;
-        return type == action.type;
+        return type == action.type && amount == action.amount;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type);
+        return Objects.hash(type, amount);
     }
 
     // 常量：预定义的动作
