@@ -30,6 +30,7 @@ npm-debug.log*
 dist/
 build/
 out/
+bin/
 
 # Output
 output/

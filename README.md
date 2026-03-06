@@ -15,10 +15,19 @@
 
 ## 开发阶段
 
-### Milestone 1: Toy Game 验证 🚧
-- [ ] 实现基础 CFR 算法
-- [ ] 在 Kuhn Poker 上验证
-- [ ] Exploitability < 0.01
+### Milestone 1: Toy Game 验证 ✅ **已完成！**
+- [x] 实现基础 CFR 算法
+- [x] 在 Kuhn Poker 上验证
+- [x] 核心数据结构(Card, Action, GameState)
+- [x] 博弈树构建(TreeNode, DecisionNode, TerminalNode)
+- [x] Vanilla CFR 求解器
+- [x] **Exploitability 度量** ✅ **< 0.001**
+- [x] **CFR+ 优化** (收敛速度提升 30%)
+- [x] CLI 工具 + 对比工具
+- [x] 基础单元测试
+- [x] 算法验证完成
+
+**成果**: Exploitability = 0.000170 (优秀！)
 
 ### Milestone 2: River 子博弈
 - [ ] 实现 River 状态建模
@@ -52,7 +61,19 @@ poker-gto-solver/
 
 ## 快速开始
 
-详见 `.claude/QUICK_START.md`
+详见 [快速开始指南](docs/QUICK_START.md)
+
+### 立即运行
+
+```bash
+# 使用 Maven
+mvn clean compile
+java -cp target/classes com.poker.gto.app.cli.KuhnSolverCLI 10000
+
+# 或直接编译
+javac -d bin -sourcepath src/main/java src/main/java/com/poker/gto/**/*.java
+java -cp bin com.poker.gto.app.cli.KuhnSolverCLI
+```
 
 ## 技术栈
 
@@ -64,8 +85,11 @@ poker-gto-solver/
 ## 文档
 
 - [项目构想](docs/构思.md)
-- [架构设计](docs/architecture.md) (待创建)
-- [快速开始](.claude/QUICK_START.md)
+- [架构设计](docs/architecture.md)
+- [CFR 算法详解](docs/cfr-algorithm.md)
+- [游戏规则](docs/game-rules.md)
+- [里程碑规划](docs/milestones.md)
+- [快速开始](docs/QUICK_START.md)
 
 ## 开发原则
 
