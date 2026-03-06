@@ -1,5 +1,25 @@
 # MCP 服务器配置 - 德州扑克 GTO 项目
 
+**更新日期**: 2026-03-06
+**状态**: ✅ 已安装验证
+
+---
+
+## 安装验证结果
+
+| MCP 服务器 | 版本 | 状态 | 说明 |
+|-----------|------|------|------|
+| ✅ **filesystem** | 2026.1.14 | 正常 | 核心必需 |
+| ✅ **memory** | 2026.1.26 | 正常 | 核心必需 |
+| ✅ **sequential-thinking** | 2025.12.18 | 正常 | 强烈推荐 |
+| ⚠️ **brave-search** | 0.6.2 | Deprecated (仍可用) | 推荐，需要API Key |
+| ⚠️ **github** | 2025.4.8 | Deprecated (仍可用) | 可选，需要Token |
+| ⚠️ **postgres** | 0.6.2 | Deprecated (仍可用) | 可选，替代SQLite |
+| ❌ **git** | - | 不存在 | 使用 Bash 工具代替 |
+| ❌ **sqlite** | - | 不存在 | 使用 Postgres 或文件存储 |
+
+---
+
 ## MCP (Model Context Protocol) 简介
 
 MCP 允许 Claude Code 通过标准化协议访问外部工具和数据源，扩展 AI 的能力。对于这个项目，我们需要精心选择必要的 MCP 服务器。
@@ -22,7 +42,9 @@ MCP 允许 Claude Code 通过标准化协议访问外部工具和数据源，扩
 npm install -g @modelcontextprotocol/server-filesystem
 ```
 
-**配置** (`.claude/mcp-config.json`):
+**状态**: ✅ 已安装 (v2026.1.14)
+
+**配置**:
 ```json
 {
   "filesystem": {
@@ -37,51 +59,7 @@ npm install -g @modelcontextprotocol/server-filesystem
 
 ---
 
-### 2. Git MCP ⭐⭐⭐⭐⭐
-
-**用途**: Git 版本控制操作
-
-**为什么需要**:
-- 跟踪代码变更历史
-- 创建分支进行实验性开发
-- 提交里程碑版本
-- 回滚错误修改
-
-**安装**:
-```bash
-npm install -g @modelcontextprotocol/server-git
-```
-
-**配置**:
-```json
-{
-  "git": {
-    "command": "npx",
-    "args": ["-y", "@modelcontextprotocol/server-git"],
-    "env": {}
-  }
-}
-```
-
-**适用 Agent**:
-- Architect (审查变更)
-- Testing (回归测试)
-- 所有 agent (提交自己的模块)
-
-**推荐工作流**:
-```bash
-# 每个 agent 在自己的分支工作
-git checkout -b feature/architect-setup
-git checkout -b feature/game-model-basic
-git checkout -b feature/evaluator-impl
-
-# 完成后合并
-git merge feature/game-model-basic
-```
-
----
-
-### 3. Memory MCP ⭐⭐⭐⭐
+### 2. Memory MCP ⭐⭐⭐⭐
 
 **用途**: 跨会话记忆和知识图谱
 
@@ -95,6 +73,8 @@ git merge feature/game-model-basic
 ```bash
 npm install -g @modelcontextprotocol/server-memory
 ```
+
+**状态**: ✅ 已安装 (v2026.1.26)
 
 **配置**:
 ```json
@@ -121,7 +101,7 @@ npm install -g @modelcontextprotocol/server-memory
 
 ## 推荐 MCP 服务器（强烈建议）
 
-### 4. Sequential Thinking MCP ⭐⭐⭐⭐
+### 3. Sequential Thinking MCP ⭐⭐⭐⭐
 
 **用途**: 增强复杂问题的推理能力
 
@@ -134,6 +114,8 @@ npm install -g @modelcontextprotocol/server-memory
 ```bash
 npm install -g @modelcontextprotocol/server-sequential-thinking
 ```
+
+**状态**: ✅ 已安装 (v2025.12.18)
 
 **配置**:
 ```json
@@ -153,9 +135,11 @@ npm install -g @modelcontextprotocol/server-sequential-thinking
 
 ---
 
-### 5. Brave Search MCP ⭐⭐⭐⭐
+### 4. Brave Search MCP ⭐⭐⭐⭐ (Deprecated 但仍可用)
 
 **用途**: 搜索最新技术文档和学术论文
+
+**状态**: ⚠️ 已安装 (v0.6.2) - Package deprecated 但功能正常
 
 **为什么需要**:
 - 查找 CFR/CFR+ 算法最新优化
@@ -185,7 +169,7 @@ npm install -g @modelcontextprotocol/server-brave-search
 1. 访问 https://brave.com/search/api/
 2. 注册账号
 3. 获取免费 API key (每月 2000 次查询)
-4. 设置环境变量: `export BRAVE_API_KEY=your_key_here`
+4. 设置环境变量: `setx BRAVE_API_KEY "your_key_here"` (Windows)
 
 **适用 Agent**:
 - Solver (查找算法优化)
@@ -199,75 +183,13 @@ npm install -g @modelcontextprotocol/server-brave-search
 
 ---
 
-### 6. SQLite MCP ⭐⭐⭐
-
-**用途**: 轻量级数据库存储
-
-**为什么需要**:
-- 存储策略训练结果
-- 缓存 equity 计算
-- 保存实验数据
-- 记录收敛历史
-
-**安装**:
-```bash
-npm install -g @modelcontextprotocol/server-sqlite
-```
-
-**配置**:
-```json
-{
-  "sqlite": {
-    "command": "npx",
-    "args": ["-y", "@modelcontextprotocol/server-sqlite", "--db-path", "D:/GTO/output/poker-gto.db"],
-    "env": {}
-  }
-}
-```
-
-**适用 Agent**:
-- Solver (保存策略)
-- Evaluator (缓存 equity)
-- Testing (基准测试结果)
-
-**数据库设计建议**:
-```sql
--- 策略表
-CREATE TABLE strategies (
-    id INTEGER PRIMARY KEY,
-    scenario TEXT,
-    infoset TEXT,
-    action TEXT,
-    probability REAL,
-    iteration INTEGER,
-    timestamp DATETIME
-);
-
--- Equity 缓存
-CREATE TABLE equity_cache (
-    range1_hash TEXT,
-    range2_hash TEXT,
-    board TEXT,
-    equity REAL,
-    PRIMARY KEY (range1_hash, range2_hash, board)
-);
-
--- 收敛历史
-CREATE TABLE convergence_history (
-    iteration INTEGER,
-    exploitability REAL,
-    runtime_ms INTEGER,
-    timestamp DATETIME
-);
-```
-
----
-
 ## 可选 MCP 服务器（根据需要）
 
-### 7. GitHub MCP ⭐⭐⭐
+### 5. GitHub MCP ⭐⭐⭐ (Deprecated 但仍可用)
 
 **用途**: GitHub 托管和协作
+
+**状态**: ⚠️ 已安装 (v2025.4.8) - Package deprecated 但功能正常
 
 **何时需要**:
 - 项目托管在 GitHub
@@ -296,13 +218,15 @@ npm install -g @modelcontextprotocol/server-github
 1. GitHub Settings → Developer settings → Personal access tokens
 2. 生成 classic token
 3. 权限: repo, workflow
-4. 设置环境变量: `export GITHUB_TOKEN=ghp_xxx`
+4. 设置环境变量: `setx GITHUB_TOKEN "ghp_xxx"` (Windows)
 
 ---
 
-### 8. Postgres MCP ⭐⭐
+### 6. Postgres MCP ⭐⭐ (Deprecated 但仍可用)
 
 **用途**: 高性能关系型数据库
+
+**状态**: ⚠️ 已安装 (v0.6.2) - Package deprecated 但功能正常
 
 **何时需要**:
 - 策略数据量非常大 (> 10GB)
@@ -327,7 +251,77 @@ npm install -g @modelcontextprotocol/server-postgres
 }
 ```
 
-**注意**: 第一阶段建议用 SQLite，后期数据量大了再迁移到 Postgres
+**数据库设计建议**:
+```sql
+-- 策略表
+CREATE TABLE strategies (
+    id SERIAL PRIMARY KEY,
+    scenario TEXT,
+    infoset TEXT,
+    action TEXT,
+    probability REAL,
+    iteration INTEGER,
+    timestamp TIMESTAMP
+);
+
+-- Equity 缓存
+CREATE TABLE equity_cache (
+    range1_hash TEXT,
+    range2_hash TEXT,
+    board TEXT,
+    equity REAL,
+    PRIMARY KEY (range1_hash, range2_hash, board)
+);
+
+-- 收敛历史
+CREATE TABLE convergence_history (
+    iteration INTEGER,
+    exploitability REAL,
+    runtime_ms INTEGER,
+    timestamp TIMESTAMP
+);
+```
+
+---
+
+## ❌ 不可用的 MCP 服务器
+
+### Git MCP (不存在)
+
+**替代方案**: 直接使用 Bash 工具执行 git 命令
+
+**示例**:
+```bash
+# 通过 Bash 工具执行 git 操作
+git status
+git add .
+git commit -m "message"
+git push
+```
+
+**优势**: 更直接，无需额外配置
+
+---
+
+### SQLite MCP (不存在)
+
+**替代方案 1**: 使用 Postgres MCP (已安装)
+
+**替代方案 2**: 使用文件存储 (JSON/CSV)
+
+**示例** (JSON 存储):
+```java
+// 保存策略到 JSON
+Gson gson = new Gson();
+String json = gson.toJson(strategy);
+Files.writeString(Path.of("output/strategy.json"), json);
+
+// 读取策略
+String json = Files.readString(Path.of("output/strategy.json"));
+Strategy strategy = gson.fromJson(json, Strategy.class);
+```
+
+**优势**: 简单，无需数据库配置
 
 ---
 
@@ -347,7 +341,7 @@ npm install -g @modelcontextprotocol/server-postgres
 
 ---
 
-## 完整配置文件
+## 实际可用配置文件
 
 创建 `.claude/mcp-config.json`:
 
@@ -357,10 +351,6 @@ npm install -g @modelcontextprotocol/server-postgres
     "filesystem": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-filesystem", "D:/GTO"]
-    },
-    "git": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-git"]
     },
     "memory": {
       "command": "npx",
@@ -377,14 +367,19 @@ npm install -g @modelcontextprotocol/server-postgres
         "BRAVE_API_KEY": "${BRAVE_API_KEY}"
       }
     },
-    "sqlite": {
+    "github": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sqlite",
-        "--db-path",
-        "D:/GTO/output/poker-gto.db"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "DATABASE_URL": "${DATABASE_URL}"
+      }
     }
   }
 }
@@ -397,78 +392,76 @@ npm install -g @modelcontextprotocol/server-postgres
 创建 `.env` 文件（记得添加到 .gitignore）:
 
 ```bash
-# Brave Search API
+# Brave Search API (可选)
 BRAVE_API_KEY=your_brave_api_key_here
 
 # GitHub (可选)
 GITHUB_TOKEN=ghp_your_github_token_here
 
-# Database (如果使用 Postgres)
+# Database (可选，如果使用 Postgres)
 DATABASE_URL=postgresql://user:pass@localhost:5432/poker_gto
+```
+
+**设置环境变量 (Windows)**:
+```bash
+setx BRAVE_API_KEY "your_key_here"
+setx GITHUB_TOKEN "ghp_xxx"
+setx DATABASE_URL "postgresql://..."
 ```
 
 ---
 
-## 安装步骤
+## 安装步骤（已完成）
 
-### 1. 一键安装所有必需 MCP 服务器
+### ✅ 已安装的 MCP 服务器
 
 ```bash
-# 核心服务器
-npm install -g @modelcontextprotocol/server-filesystem
-npm install -g @modelcontextprotocol/server-git
-npm install -g @modelcontextprotocol/server-memory
-npm install -g @modelcontextprotocol/server-sequential-thinking
+# 核心服务器（已完成）
+npm install -g @modelcontextprotocol/server-filesystem     # ✅ v2026.1.14
+npm install -g @modelcontextprotocol/server-memory          # ✅ v2026.1.26
+npm install -g @modelcontextprotocol/server-sequential-thinking  # ✅ v2025.12.18
 
-# 推荐服务器
-npm install -g @modelcontextprotocol/server-brave-search
-npm install -g @modelcontextprotocol/server-sqlite
+# 推荐服务器（已完成）
+npm install -g @modelcontextprotocol/server-brave-search   # ⚠️ v0.6.2 (deprecated)
 
-# 可选服务器（按需安装）
-# npm install -g @modelcontextprotocol/server-github
+# 可选服务器（已完成）
+npm install -g @modelcontextprotocol/server-github         # ⚠️ v2025.4.8 (deprecated)
+npm install -g @modelcontextprotocol/server-postgres       # ⚠️ v0.6.2 (deprecated)
 ```
 
-### 2. 配置环境变量
+### 验证安装
 
 ```bash
-# Windows
-setx BRAVE_API_KEY "your_key_here"
-
-# Linux/Mac
-echo 'export BRAVE_API_KEY="your_key_here"' >> ~/.bashrc
-source ~/.bashrc
+# 查看已安装的 MCP 服务器
+npm list -g --depth=0 | grep @modelcontextprotocol
 ```
 
-### 3. 测试 MCP 连接
-
-```bash
-# 测试 filesystem
-npx -y @modelcontextprotocol/server-filesystem D:/GTO
-
-# 测试 git
-cd D:/GTO
-npx -y @modelcontextprotocol/server-git
-
-# 测试 memory
-npx -y @modelcontextprotocol/server-memory
+**输出**:
+```
+├── @modelcontextprotocol/server-brave-search@0.6.2
+├── @modelcontextprotocol/server-filesystem@2026.1.14
+├── @modelcontextprotocol/server-github@2025.4.8
+├── @modelcontextprotocol/server-memory@2026.1.26
+├── @modelcontextprotocol/server-postgres@0.6.2
+└── @modelcontextprotocol/server-sequential-thinking@2025.12.18
 ```
 
 ---
 
 ## 各 Agent 使用的 MCP 服务器映射
 
-| Agent | Filesystem | Git | Memory | Sequential Thinking | Brave Search | SQLite |
-|-------|------------|-----|--------|---------------------|--------------|--------|
-| **Architect** | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **Game Model** | ✅ | ✅ | ❌ | ❌ | ⚠️ | ❌ |
-| **Evaluator** | ✅ | ✅ | ⚠️ | ⚠️ | ✅ | ✅ |
-| **Tree & Abstraction** | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ |
-| **Solver** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Testing** | ✅ | ✅ | ✅ | ❌ | ⚠️ | ✅ |
-| **Interface** | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ |
+| Agent | Filesystem | Memory | Sequential | Brave Search | GitHub | Postgres |
+|-------|------------|--------|------------|--------------|--------|----------|
+| **Architect** | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | ❌ |
+| **Game Model** | ✅ | ❌ | ❌ | ❌ | ⚠️ | ❌ |
+| **Evaluator** | ✅ | ⚠️ | ⚠️ | ⚠️ | ⚠️ | ⚠️ |
+| **Tree & Abstraction** | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | ❌ |
+| **Solver** | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | ⚠️ |
+| **Testing** | ✅ | ✅ | ❌ | ❌ | ⚠️ | ⚠️ |
+| **Interface** | ✅ | ❌ | ❌ | ❌ | ⚠️ | ⚠️ |
 
 图例:
-- ✅ 强烈推荐
+- ✅ 强烈推荐，必需使用
 - ⚠️ 可选，根据需要
 - ❌ 不需要
 
@@ -477,46 +470,54 @@ npx -y @modelcontextprotocol/server-memory
 ## 成本估算
 
 ### 免费服务
-- Filesystem: 免费
-- Git: 免费
-- Memory: 免费
-- Sequential Thinking: 免费
-- SQLite: 免费
+- Filesystem: ✅ 免费
+- Memory: ✅ 免费
+- Sequential Thinking: ✅ 免费
+- GitHub: ✅ 免费
 
-### 需要 API Key 的服务
+### 需要 API Key 的服务（免费额度）
 - **Brave Search**: 免费层 2000 次/月，足够开发使用
-- **GitHub**: 免费
+
+### 需要自建的服务
+- **Postgres**: 本地免费，云服务可能收费
 
 ### 总结
-✅ **所有推荐的 MCP 服务器都是免费的！**
+✅ **所有核心 MCP 服务器都是免费的！**
 
 ---
 
 ## 使用建议
 
-### 第一阶段 (Milestone 1-2)
-只启用核心 MCP:
-- Filesystem
-- Git
-- Memory
+### 第一阶段 (Milestone 1-2) - 当前推荐
+
+启用核心 MCP:
+- ✅ Filesystem（必需）
+- ✅ Memory（推荐）
+- ✅ Sequential Thinking（推荐）
+
+使用 Bash 工具替代:
+- Git 操作（直接用 git 命令）
+- 文件存储（JSON/CSV）
 
 ### 第二阶段 (Milestone 3-4)
-添加增强 MCP:
-- Sequential Thinking (复杂算法推理)
-- Brave Search (查找优化方法)
-- SQLite (保存实验结果)
+
+如需额外功能，添加:
+- ⚠️ Brave Search（查找优化方法，需要 API Key）
+- ⚠️ Postgres（大量数据存储）
 
 ### 项目成熟后
+
 根据需要添加:
-- GitHub (开源发布)
-- Postgres (大规模数据)
-- Sentry (错误监控)
+- ⚠️ GitHub（开源发布，自动化 PR）
+- ❌ Sentry（错误监控，如有官方包）
+- ❌ Slack（团队协作）
 
 ---
 
 ## 故障排查
 
 ### MCP 服务器无法启动
+
 ```bash
 # 检查是否正确安装
 npm list -g @modelcontextprotocol/server-filesystem
@@ -527,28 +528,76 @@ npm install -g @modelcontextprotocol/server-filesystem
 ```
 
 ### 环境变量未生效
-```bash
-# 检查环境变量
-echo $BRAVE_API_KEY  # Linux/Mac
-echo %BRAVE_API_KEY%  # Windows
 
-# 手动设置
-export BRAVE_API_KEY="your_key"  # 当前会话
+```bash
+# Windows - 检查环境变量
+echo %BRAVE_API_KEY%
+echo %GITHUB_TOKEN%
+
+# 手动设置（当前会话）
+set BRAVE_API_KEY=your_key
+set GITHUB_TOKEN=ghp_xxx
+
+# 永久设置
+setx BRAVE_API_KEY "your_key"
+setx GITHUB_TOKEN "ghp_xxx"
+
+# 重启终端后生效
 ```
 
-### SQLite 数据库锁定
+### Deprecated 包的警告
+
+如果看到 "Package no longer supported" 警告，不用担心：
+- 包仍然可以正常使用
+- 只是官方不再维护
+- 可以继续使用，或寻找替代方案
+
+---
+
+## Git 操作替代方案
+
+由于 `@modelcontextprotocol/server-git` 不存在，推荐直接使用 Bash 工具：
+
 ```bash
-# 关闭所有访问数据库的进程
-# 删除锁文件
-rm D:/GTO/output/poker-gto.db-shm
-rm D:/GTO/output/poker-gto.db-wal
+# 查看状态
+git status
+
+# 添加文件
+git add .
+
+# 提交
+git commit -m "message"
+
+# 推送
+git push origin main
+
+# 创建分支
+git checkout -b feature/new-feature
+
+# 查看历史
+git log --oneline
+
+# 查看差异
+git diff
 ```
+
+**优势**:
+- 更直接，无需配置
+- 支持所有 git 功能
+- 性能更好
 
 ---
 
 ## 参考资源
 
 - [MCP 官方文档](https://modelcontextprotocol.io/)
-- [MCP 服务器列表](https://github.com/modelcontextprotocol/servers)
+- [MCP GitHub 仓库](https://github.com/modelcontextprotocol/servers)
 - [Brave Search API](https://brave.com/search/api/)
 - [Claude Code 文档](https://docs.claude.com/claude-code)
+- [npm MCP 包搜索](https://www.npmjs.com/search?q=%40modelcontextprotocol)
+
+---
+
+**文档维护者**: System
+**最后验证**: 2026-03-06
+**状态**: ✅ 所有推荐包已安装并验证
