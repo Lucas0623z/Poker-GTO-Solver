@@ -1,0 +1,279 @@
+{
+  "project": {
+    "name": "poker-gto-solver",
+    "description": "德州扑克 GTO 模拟器 - 基于 CFR 算法的博弈论求解器",
+    "version": "0.1.0",
+    "language": "java"
+  },
+
+  "subagents": {
+    "architect": {
+      "enabled": true,
+      "description": "项目架构师 - 维护整体架构一致性",
+      "systemPromptPath": ".claude/subagents/architect/system.md",
+      "context": ["shared", "architect"],
+      "mcp": ["filesystem", "git", "memory", "sequential-thinking", "brave-search"],
+      "autoTrigger": false,
+      "triggers": [
+        "需要架构设计",
+        "模块接口变更",
+        "重构计划"
+      ]
+    },
+
+    "game-model": {
+      "enabled": true,
+      "description": "规则建模 Agent - 德州扑克规则与状态机",
+      "systemPromptPath": ".claude/subagents/game-model/system.md",
+      "context": ["shared", "game-model"],
+      "mcp": ["filesystem", "git"],
+      "autoTrigger": false,
+      "triggers": [
+        "实现游戏规则",
+        "修改状态转移",
+        "添加动作类型"
+      ]
+    },
+
+    "evaluator": {
+      "enabled": true,
+      "description": "手牌评估 Agent - 牌力计算与 Equity",
+      "systemPromptPath": ".claude/subagents/evaluator/system.md",
+      "context": ["shared", "evaluator"],
+      "mcp": ["filesystem", "git", "brave-search", "sqlite"],
+      "autoTrigger": false,
+      "triggers": [
+        "实现牌力评估",
+        "优化性能",
+        "计算 equity"
+      ]
+    },
+
+    "tree-abstraction": {
+      "enabled": true,
+      "description": "博弈树 Agent - 树生成与状态抽象",
+      "systemPromptPath": ".claude/subagents/tree-abstraction/system.md",
+      "context": ["shared", "tree-abstraction"],
+      "mcp": ["filesystem", "git", "memory", "sequential-thinking", "brave-search"],
+      "autoTrigger": false,
+      "triggers": [
+        "生成决策树",
+        "设计信息集",
+        "配置抽象策略"
+      ]
+    },
+
+    "solver": {
+      "enabled": true,
+      "description": "求解器 Agent - CFR 算法实现",
+      "systemPromptPath": ".claude/subagents/solver/system.md",
+      "context": ["shared", "solver"],
+      "mcp": ["filesystem", "git", "memory", "sequential-thinking", "brave-search", "sqlite"],
+      "autoTrigger": false,
+      "triggers": [
+        "实现 CFR",
+        "优化收敛",
+        "计算均衡策略"
+      ]
+    },
+
+    "testing": {
+      "enabled": true,
+      "description": "测试 Agent - 验证与回归测试",
+      "systemPromptPath": ".claude/subagents/testing/system.md",
+      "context": ["shared", "testing"],
+      "mcp": ["filesystem", "git", "memory", "sqlite"],
+      "autoTrigger": true,
+      "triggers": [
+        "编写测试",
+        "验证正确性",
+        "性能测试"
+      ]
+    },
+
+    "interface": {
+      "enabled": true,
+      "description": "接口 Agent - CLI 与结果导出",
+      "systemPromptPath": ".claude/subagents/interface/system.md",
+      "context": ["shared", "interface"],
+      "mcp": ["filesystem", "git", "sqlite"],
+      "autoTrigger": false,
+      "triggers": [
+        "创建 CLI",
+        "导出结果",
+        "配置文件"
+      ]
+    }
+  },
+
+  "context": {
+    "shared": {
+      "include": [
+        "docs/构想.md",
+        "docs/architecture.md",
+        "README.md",
+        ".gitignore"
+      ],
+      "alwaysInclude": true
+    },
+    "architect": {
+      "include": [
+        "docs/**/*.md",
+        "src/**/README.md",
+        "src/**/*.java",
+        "tests/integration/",
+        "pom.xml"
+      ],
+      "exclude": [
+        "output/**",
+        "target/**",
+        "*.class"
+      ]
+    },
+    "game-model": {
+      "include": [
+        "src/core/cards/**",
+        "src/core/game_state/**",
+        "src/core/actions/**",
+        "docs/game-rules.md",
+        "tests/unit/core/**"
+      ]
+    },
+    "evaluator": {
+      "include": [
+        "src/core/cards/**",
+        "src/core/evaluator/**",
+        "tests/unit/evaluator/**",
+        "tests/benchmark/**"
+      ]
+    },
+    "tree-abstraction": {
+      "include": [
+        "src/core/tree/**",
+        "src/abstraction/**",
+        "docs/abstraction-plan.md",
+        "tests/unit/tree/**"
+      ]
+    },
+    "solver": {
+      "include": [
+        "src/solver/**",
+        "src/core/tree/**",
+        "docs/cfr-algorithm.md",
+        "tests/integration/toy-games/**"
+      ]
+    },
+    "testing": {
+      "include": [
+        "src/**",
+        "tests/**",
+        "docs/test-plan.md"
+      ],
+      "exclude": [
+        "output/**"
+      ]
+    },
+    "interface": {
+      "include": [
+        "src/app/**",
+        "src/io/**",
+        "config/**",
+        "docs/cli-usage.md"
+      ]
+    }
+  },
+
+  "mcp": {
+    "servers": {
+      "filesystem": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-filesystem", "D:/GTO"],
+        "enabled": true
+      },
+      "git": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-git"],
+        "enabled": true
+      },
+      "memory": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-memory"],
+        "enabled": true
+      },
+      "sequential-thinking": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+        "enabled": true
+      },
+      "brave-search": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+        "env": {
+          "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+        },
+        "enabled": true
+      },
+      "sqlite": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-sqlite",
+          "--db-path",
+          "D:/GTO/output/poker-gto.db"
+        ],
+        "enabled": true
+      }
+    }
+  },
+
+  "workflow": {
+    "developmentPhases": [
+      {
+        "phase": "milestone-1",
+        "name": "Toy Game 验证",
+        "agents": ["architect", "solver", "testing"],
+        "goal": "在 Kuhn Poker 上验证 CFR 实现正确性"
+      },
+      {
+        "phase": "milestone-2",
+        "name": "River 子博弈",
+        "agents": ["game-model", "evaluator", "tree-abstraction", "solver", "testing"],
+        "goal": "实现完整的 River 求解流程"
+      },
+      {
+        "phase": "milestone-3",
+        "name": "Turn/Flop 扩展",
+        "agents": ["tree-abstraction", "solver", "testing"],
+        "goal": "扩展到多街道，优化抽象策略"
+      },
+      {
+        "phase": "milestone-4",
+        "name": "完整流程",
+        "agents": ["game-model", "interface", "testing"],
+        "goal": "实现 Preflop 到 River 的完整求解"
+      }
+    ],
+    "collaborationRules": [
+      "每个 agent 只修改自己负责的模块",
+      "跨模块修改必须通知 architect",
+      "公共接口变更必须先更新文档",
+      "先写测试，再扩功能",
+      "每次提交只解决一个明确问题"
+    ]
+  },
+
+  "settings": {
+    "autoSave": true,
+    "maxContextSize": "10MB",
+    "excludePatterns": [
+      "node_modules/**",
+      "target/**",
+      "*.class",
+      "*.log",
+      "output/**",
+      ".git/**"
+    ],
+    "testFramework": "junit5",
+    "buildTool": "maven"
+  }
+}
